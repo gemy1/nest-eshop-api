@@ -3,8 +3,10 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UsersModule } from './users/users.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { User } from './users/entitiy/user.entity';
+import { User } from './users/entity/user.entity';
 import { CategoryModule } from './category/category.module';
+import { AuthModule } from './auth/auth.module';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
@@ -14,8 +16,12 @@ import { CategoryModule } from './category/category.module';
       entities: [User],
       synchronize: true,
     }),
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
     UsersModule,
     CategoryModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],

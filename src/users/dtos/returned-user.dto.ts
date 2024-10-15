@@ -9,4 +9,7 @@ export class ReturnedUserDto {
 
   @Expose()
   email: string;
+
+  @Expose()
+  accessToken: string;
 }
