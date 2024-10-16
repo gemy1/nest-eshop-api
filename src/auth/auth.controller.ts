@@ -23,6 +23,7 @@ export class AuthController {
     return await this.authService.logout(parseInt(req['user'].id));
   }
 
+  @Public()
   @Get('refresh')
   getRefreshToken(@Body('refreshToken') refreshToken: string) {
     return this.authService.refreshAccessToken(refreshToken);
