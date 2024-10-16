@@ -1,21 +1,30 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post, Req } from '@nestjs/common';
 import { CreateUserDto } from 'src/users/dtos/create-user.dto';
 import { LoginUserDto } from 'src/users/dtos/login-user.dto';
 import { AuthService } from './auth.service';
-import { Serialize } from 'src/interceptors/serialize.interceptor';
-import { ReturnedUserDto } from 'src/users/dtos/returned-user.dto';
+import { Request } from 'express';
+import { Public } from 'src/decorators/public.decorator';
 
 @Controller('auth')
-@Serialize(ReturnedUserDto)
 export class AuthController {
   constructor(private authService: AuthService) {}
-  @Post('/register')
+  @Public()
+  @Post('register')
   async registerUser(@Body() userDetails: CreateUserDto) {
     return await this.authService.register(userDetails);
   }
-
-  @Post('/login')
+  @Public()
+  @Post('login')
   async loginUser(@Body() userDetails: LoginUserDto) {
     return this.authService.login(userDetails);
+  }
+  @Get('logout')
+  async logout(@Req() req: Request) {
+    return await this.authService.logout(parseInt(req['user'].id));
+  }
+
+  @Get('refresh')
+  getRefreshToken(@Body('refreshToken') refreshToken: string) {
+    return this.authService.refreshAccessToken(refreshToken);
   }
 }
