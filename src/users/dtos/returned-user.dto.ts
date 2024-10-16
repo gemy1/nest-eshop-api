@@ -11,5 +11,5 @@ export class ReturnedUserDto {
   email: string;
 
   @Expose()
-  accessToken: string;
+  message: string;
 }
