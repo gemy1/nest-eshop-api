@@ -9,7 +9,7 @@ import { UsersService } from '../users/users.service';
 import { LoginUserDto } from '../users/dtos/login-user.dto';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
-import { IPayload } from './interfaces/jwt.interfaces';
+import { IJwtPayload } from './interfaces/jwt.interfaces';
 
 @Injectable()
 export class AuthService {
@@ -33,7 +33,7 @@ export class AuthService {
 
     const user = await this.userService.create(userDetails);
 
-    const payload: IPayload = {
+    const payload: IJwtPayload = {
       id: user.id,
       email: user.email,
       username: user.username,
@@ -68,7 +68,7 @@ export class AuthService {
     return { message: 'Logged out' };
   }
 
-  async getTokens(payload: IPayload) {
+  async getTokens(payload: IJwtPayload) {
     const ACCESS_SECRET = this.configService.get('JWT_ACCESS_SECRET');
     const REFRESH_SECRET = this.configService.get('JWT_REFRESH_SECRET');
 
