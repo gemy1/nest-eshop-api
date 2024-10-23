@@ -9,6 +9,7 @@ import { Reflector } from '@nestjs/core';
 import { JwtService } from '@nestjs/jwt';
 import { Request } from 'express';
 import { IS_PUBLIC_KEY } from '../decorators/public.decorator';
+import { User } from 'src/users/entity/user.entity';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
@@ -29,30 +30,11 @@ export class AuthGuard implements CanActivate {
     }
 
     const request = context.switchToHttp().getRequest<Request>();
-    const token = this.getTokenFromRequest(request);
 
-    if (!token) {
-      throw new UnauthorizedException('Unauthorized');
-    }
-    try {
-      const payload = await this.jwtService.verifyAsync(token, {
-        secret: this.configService.get('JWT_ACCESS_SECRET'),
-      });
-      request['user'] = payload;
-    } catch {
-      throw new UnauthorizedException('Unauthorized');
+    if (!(request.currentUser instanceof User)) {
+      throw new UnauthorizedException('forbidden resource');
     }
 
     return true;
-  }
-
-  private getTokenFromRequest(req: Request): string | undefined {
-    const [type, token] = req.headers?.authorization?.split(' ') ?? [];
-
-    if (type !== 'Bearer') {
-      return undefined;
-    }
-
-    return token;
   }
 }

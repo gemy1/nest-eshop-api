@@ -20,7 +20,7 @@ export class AuthController {
   }
   @Get('logout')
   async logout(@Req() req: Request) {
-    return await this.authService.logout(parseInt(req['user'].id));
+    return await this.authService.logout(req.currentUser.id);
   }
 
   @Public()
