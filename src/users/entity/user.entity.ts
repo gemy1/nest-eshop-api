@@ -23,7 +23,7 @@ export class User {
   @Column({ default: null })
   refreshToken: string;
 
-  @Column({ default: 'admin' })
+  @Column({ default: 'user' })
   role: string;
 
   @CreateDateColumn()

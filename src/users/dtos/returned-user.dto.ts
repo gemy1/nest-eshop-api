@@ -11,5 +11,8 @@ export class ReturnedUserDto {
   email: string;
 
   @Expose()
+  role: string;
+
+  @Expose()
   message: string;
 }

@@ -40,6 +40,7 @@ export class UsersController {
     return this.userService.update(parseInt(id), updateUser);
   }
 
+  @Roles(['admin'])
   @Delete(':id')
   removeUser(@Param('id') id: string) {
     return this.userService.removeById(parseInt(id));
