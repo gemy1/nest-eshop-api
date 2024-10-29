@@ -8,6 +8,7 @@ import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
 import { APP_PIPE } from '@nestjs/core';
 import { dbConfig } from 'typeOrm.config';
+import { ProductModule } from './product/product.module';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { dbConfig } from 'typeOrm.config';
     UsersModule,
     CategoryModule,
     AuthModule,
+    ProductModule,
   ],
   controllers: [AppController],
   providers: [
