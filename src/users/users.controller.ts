@@ -12,6 +12,7 @@ import { Serialize } from 'src/interceptors/serialize.interceptor';
 import { ReturnedUserDto } from './dtos/returned-user.dto';
 import { UpdateUserDto } from './dtos/update-user.dto';
 import { Roles } from 'src/decorators/roles.decorator';
+import { OwnershipCheck } from 'src/decorators/ownership.decorator';
 
 @Controller('users')
 @Serialize(ReturnedUserDto)
@@ -26,6 +27,7 @@ export class UsersController {
   }
 
   @Get(':id')
+  @OwnershipCheck()
   async findOne(@Param('id') id: string) {
     const user = await this.userService.findOneById(parseInt(id));
     if (!user) {
@@ -34,8 +36,8 @@ export class UsersController {
     return user;
   }
 
-  @Roles(['admin'])
   @Patch(':id')
+  @OwnershipCheck()
   update(@Param('id') id: string, @Body() updateUser: UpdateUserDto) {
     return this.userService.update(parseInt(id), updateUser);
   }

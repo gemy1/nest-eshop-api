@@ -25,11 +25,6 @@ export class RoleGuard implements CanActivate {
       throw new UnauthorizedException();
     }
 
-    //if the user try to make an action on its account then return true
-    if (user.id === parseInt(request.params.id)) {
-      return true;
-    }
-
     if (!roles.includes(user.role)) {
       throw new UnauthorizedException('You Are Not Authorized');
     }
