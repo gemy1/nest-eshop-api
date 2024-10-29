@@ -13,6 +13,7 @@ import { ReturnedUserDto } from './dtos/returned-user.dto';
 import { UpdateUserDto } from './dtos/update-user.dto';
 import { Roles } from 'src/decorators/roles.decorator';
 import { OwnershipCheck } from 'src/decorators/ownership.decorator';
+import { ProtectFields } from 'src/decorators/protect-fields.decorator';
 
 @Controller('users')
 @Serialize(ReturnedUserDto)
@@ -22,6 +23,7 @@ export class UsersController {
   //TODO: Implement createUser method
 
   @Get()
+  @Roles(['admin'])
   findAll() {
     return this.userService.findAll();
   }
@@ -38,12 +40,13 @@ export class UsersController {
 
   @Patch(':id')
   @OwnershipCheck()
+  @ProtectFields(['role'])
   update(@Param('id') id: string, @Body() updateUser: UpdateUserDto) {
     return this.userService.update(parseInt(id), updateUser);
   }
 
-  @Roles(['admin'])
   @Delete(':id')
+  @OwnershipCheck()
   removeUser(@Param('id') id: string) {
     return this.userService.removeById(parseInt(id));
   }

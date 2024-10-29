@@ -43,6 +43,18 @@ export class UsersService {
     return await this.repo.save(user);
   }
 
+  async updateRefreshToken(id: number, refreshToken: string) {
+    const user = await this.repo.findOne({ where: { id: id } });
+
+    if (!user) {
+      throw new BadRequestException('User not found');
+    }
+
+    Object.assign(user, { refreshToken });
+
+    return await this.repo.save(user);
+  }
+
   async removeById(id: number) {
     const user = await this.repo.delete(id);
 
