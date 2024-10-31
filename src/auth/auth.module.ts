@@ -22,5 +22,6 @@ import { OwnershipGuard } from '../guards/ownership.guard';
     { provide: APP_GUARD, useClass: RoleGuard },
     { provide: APP_GUARD, useClass: OwnershipGuard },
   ],
+  exports: [AuthService],
 })
 export class AuthModule {}

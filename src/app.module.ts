@@ -9,6 +9,7 @@ import { ConfigModule } from '@nestjs/config';
 import { APP_PIPE } from '@nestjs/core';
 import { dbConfig } from '../typeOrm.config';
 import { ProductModule } from './product/product.module';
+import { AdminSeederModule } from './seed/admin-seeder.module';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { ProductModule } from './product/product.module';
     CategoryModule,
     AuthModule,
     ProductModule,
+    AdminSeederModule,
   ],
   controllers: [AppController],
   providers: [
