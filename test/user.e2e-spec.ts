@@ -2,11 +2,12 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { AppModule } from '../src/app.module';
 import * as request from 'supertest';
 import { INestApplication } from '@nestjs/common';
+import { AuthService } from '../src/auth/auth.service';
 
 describe('Auth module', () => {
   let app: INestApplication;
-  const accessToken: string =
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTQsImVtYWlsIjoiZ0B2LmNvbSIsInVzZXJuYW1lIjoibmV3IGdhbWFsIiwiaWF0IjoxNzI5MzQ3MzQ4LCJleHAiOjE3Mjk0MzM3NDh9.BwoXkPpenbyMH7rTW6YBe7LgHmXA9h14-GCYu7vteLU';
+  let authService: AuthService;
+  let accessToken: string;
 
   beforeEach(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -15,6 +16,16 @@ describe('Auth module', () => {
 
     app = moduleFixture.createNestApplication();
     await app.init();
+    authService = moduleFixture.get<AuthService>(AuthService);
+  });
+  beforeEach(async () => {
+    const admin = {
+      username: 'admin',
+      password: '123456',
+      email: 'a@a.com',
+      role: 'admin',
+    };
+    ({ accessToken } = await authService.register(admin));
   });
 
   describe('find all user', () => {
@@ -25,5 +36,15 @@ describe('Auth module', () => {
       expect(res.status).toBe(200);
       expect(Array.isArray(res.body)).toBeTruthy();
     });
+  });
+
+  it('should return the user with specific id', async () => {
+    const res = await request(app.getHttpServer())
+      .get('/users/1')
+      .set('Authorization', `Bearer ${accessToken}`);
+
+    expect(res.status).toBe(200);
+    expect(res.body.id).toBe(1);
+    expect(res.body.username).toBe('admin');
   });
 });

@@ -7,7 +7,7 @@ import { CategoryModule } from './category/category.module';
 import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
 import { APP_PIPE } from '@nestjs/core';
-import { dbConfig } from 'typeOrm.config';
+import { dbConfig } from '../typeOrm.config';
 import { ProductModule } from './product/product.module';
 
 @Module({

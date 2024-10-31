@@ -42,6 +42,7 @@ switch (process.env.NODE_ENV) {
 
   case 'test':
     dbConfig.type = 'sqlite';
+    dbConfig.entities = ['**/*.entity.ts'];
     dbConfig.database = process.env.DB_NAME_TEST;
     dbConfig.synchronize = true;
     dbConfig.migrationsRun = false;

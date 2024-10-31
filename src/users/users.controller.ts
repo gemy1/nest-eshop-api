@@ -8,12 +8,12 @@ import {
   Patch,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { Serialize } from 'src/interceptors/serialize.interceptor';
+import { Serialize } from '../interceptors/serialize.interceptor';
 import { ReturnedUserDto } from './dtos/returned-user.dto';
 import { UpdateUserDto } from './dtos/update-user.dto';
-import { Roles } from 'src/decorators/roles.decorator';
-import { OwnershipCheck } from 'src/decorators/ownership.decorator';
-import { ProtectFields } from 'src/decorators/protect-fields.decorator';
+import { Roles } from '../decorators/roles.decorator';
+import { OwnershipCheck } from '../decorators/ownership.decorator';
+import { ProtectFields } from '../decorators/protect-fields.decorator';
 
 @Controller('users')
 @Serialize(ReturnedUserDto)
