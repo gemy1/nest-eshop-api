@@ -13,11 +13,6 @@ import { AdminSeederModule } from './seed/admin-seeder.module';
 
 @Module({
   imports: [
-    // TypeOrmModule.forRootAsync({
-    //   inject: [ConfigService],
-    //   useFactory: (configService: ConfigService) =>
-    //     configService.get('database'),
-    // }),
     TypeOrmModule.forRoot(dbConfig as any),
     ConfigModule.forRoot({
       isGlobal: true,
