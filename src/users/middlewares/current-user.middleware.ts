@@ -8,7 +8,7 @@ import { UsersService } from '../users.service';
 declare module 'express' {
   interface Request {
     currentUser?: User;
-    token?: string;
+    tokenStatus?: string;
   }
 }
 @Injectable()
@@ -29,9 +29,10 @@ export class CurrentUserMiddleware implements NestMiddleware {
         secret: this.configService.get('JWT_ACCESS_SECRET'),
       });
       req.currentUser = await this.usersService.findOneById(payload.id);
+      req.tokenStatus = 'valid';
     } catch (error) {
       req.currentUser = null;
-      req.token = error.message;
+      req.tokenStatus = error.message;
     }
 
     next();

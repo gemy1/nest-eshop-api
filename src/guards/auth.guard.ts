@@ -32,7 +32,7 @@ export class AuthGuard implements CanActivate {
     const request = context.switchToHttp().getRequest<Request>();
 
     if (!(request.currentUser instanceof User)) {
-      throw new UnauthorizedException('forbidden resource');
+      throw new UnauthorizedException(request.tokenStatus);
     }
 
     return true;

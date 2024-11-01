@@ -37,6 +37,7 @@ export class AuthService {
       id: user.id,
       email: user.email,
       username: user.username,
+      role: user.role,
     };
 
     const { accessToken, refreshToken } = await this.getTokens(payload);
@@ -55,7 +56,12 @@ export class AuthService {
       throw new UnauthorizedException('Invalid credentials');
     }
 
-    const payload = { id: user.id, email: user.email, username: user.username };
+    const payload = {
+      id: user.id,
+      email: user.email,
+      username: user.username,
+      role: user.role,
+    };
     const { accessToken, refreshToken } = await this.getTokens(payload);
 
     await this.updateRefreshToken(user.id, refreshToken);
@@ -124,6 +130,7 @@ export class AuthService {
         id: user.id,
         email: user.email,
         username: user.username,
+        role: user.role,
       });
 
       return { accessToken: accessToken };
