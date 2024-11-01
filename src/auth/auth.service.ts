@@ -123,7 +123,7 @@ export class AuthService {
       );
 
       if (!compareRefreshToken) {
-        throw new UnauthorizedException('Invalid compared refresh token');
+        throw new UnauthorizedException('token revoked');
       }
 
       const { accessToken } = await this.getTokens({

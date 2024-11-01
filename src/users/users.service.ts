@@ -4,6 +4,7 @@ import { User } from './entity/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateUserDto } from './dtos/create-user.dto';
 import { UpdateUserDto } from './dtos/update-user.dto';
+import * as argon2 from 'argon2';
 
 @Injectable()
 export class UsersService {
@@ -36,6 +37,12 @@ export class UsersService {
 
     if (!user) {
       throw new BadRequestException('User not found');
+    }
+
+    const { password } = updateUserDto;
+    if (password) {
+      const hashPassword = await argon2.hash(password);
+      updateUserDto.password = hashPassword;
     }
 
     Object.assign(user, updateUserDto);
