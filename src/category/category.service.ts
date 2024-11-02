@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 import { Repository } from 'typeorm';
@@ -9,24 +9,53 @@ import { InjectRepository } from '@nestjs/typeorm';
 export class CategoryService {
   constructor(@InjectRepository(Category) private repo: Repository<Category>) {}
   async create(createCategoryDto: CreateCategoryDto) {
+    const { name } = createCategoryDto;
+
+    const findCategory = await this.findOneByName(name);
+
+    if (findCategory) {
+      throw new BadRequestException('Category already exists');
+    }
+
     const category = this.repo.create(createCategoryDto);
 
     return await this.repo.save(category);
   }
 
-  findAll() {
-    return `This action returns all category`;
+  async findAll() {
+    return await this.repo.find();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} category`;
+  async findOne(id: number) {
+    return await this.repo.findOne({ where: { id } });
   }
 
-  update(id: number, updateCategoryDto: UpdateCategoryDto) {
-    return `This action updates a #${id} category`;
+  async findOneByName(name: string) {
+    return await this.repo.findOne({ where: { name } });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} category`;
+  async update(id: number, updateCategoryDto: UpdateCategoryDto) {
+    const category = await this.findOne(id);
+
+    if (!category) {
+      throw new BadRequestException('Category not found');
+    }
+
+    Object.assign(category, updateCategoryDto);
+
+    return await this.repo.save(category);
+  }
+
+  async remove(id: number) {
+    const category = await this.findOne(id);
+
+    if (!category) {
+      throw new BadRequestException(
+        'No item match your criteria in categories',
+      );
+    }
+    const del = await this.repo.delete(id);
+    if (del.affected > 0)
+      return { category: category, message: 'item deleted successful' };
   }
 }
