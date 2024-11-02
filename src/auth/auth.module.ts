@@ -7,6 +7,7 @@ import { APP_GUARD } from '@nestjs/core';
 import { AuthGuard } from '../guards/auth.guard';
 import { RoleGuard } from '../guards/role.guard';
 import { OwnershipGuard } from '../guards/ownership.guard';
+import { ProductModule } from 'src/product/product.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { OwnershipGuard } from '../guards/ownership.guard';
     JwtModule.register({
       global: true,
     }),
+    ProductModule,
   ],
   controllers: [AuthController],
   providers: [

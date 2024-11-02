@@ -1,26 +1,83 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
+import { Like, Repository } from 'typeorm';
+import { Product } from './entities/product.entity';
+import { InjectRepository } from '@nestjs/typeorm';
+import { User } from 'src/users/entity/user.entity';
+import { CategoryService } from 'src/category/category.service';
+import { Category } from 'src/category/entities/category.entity';
 
 @Injectable()
 export class ProductService {
-  create(createProductDto: CreateProductDto) {
-    return 'This action adds a new product';
+  constructor(
+    @InjectRepository(Product) private repo: Repository<Product>,
+    private categoryService: CategoryService,
+  ) {}
+  async create(createProductDto: CreateProductDto, user: User) {
+    const { categoryId } = createProductDto;
+
+    let category: Category;
+    if (categoryId) {
+      category = await this.categoryService.findOne(categoryId);
+      if (!category) {
+        throw new BadRequestException('CategoryId not found');
+      }
+    }
+
+    const product = this.repo.create(createProductDto);
+    product.user = user;
+    product.category = category;
+
+    return this.repo.save(product);
   }
 
-  findAll() {
-    return `This action returns all product`;
+  async findAll() {
+    return await this.repo.find();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} product`;
+  async findOneById(id: number) {
+    return await this.repo.findOne({
+      where: { id },
+    });
   }
 
-  update(id: number, updateProductDto: UpdateProductDto) {
-    return `This action updates a #${id} product`;
+  async findOneByName(namePattern: string) {
+    return await this.repo.find({
+      where: { name: Like(`%${namePattern}%`) },
+    });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} product`;
+  async update(id: number, updateProductDto: UpdateProductDto) {
+    const product = await this.findOneById(id);
+
+    if (!product) {
+      throw new BadRequestException('No item match your criteria in products');
+    }
+
+    const { categoryId } = updateProductDto;
+
+    let category: Category;
+    if (categoryId) {
+      category = await this.categoryService.findOne(categoryId);
+      if (!category) {
+        throw new BadRequestException('CategoryId not found');
+      }
+    }
+    Object.assign(product, updateProductDto);
+    product.category = category;
+
+    return await this.repo.save(product);
+  }
+
+  async remove(id: number) {
+    const product = await this.findOneById(id);
+
+    if (!product) {
+      throw new BadRequestException('No item match your criteria in products');
+    }
+    const del = await this.repo.delete(id);
+    if (del.affected > 0)
+      return { ...product, message: 'item deleted successful' };
   }
 }

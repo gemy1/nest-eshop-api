@@ -6,36 +6,70 @@ import {
   Patch,
   Param,
   Delete,
+  Req,
+  NotFoundException,
+  BadRequestException,
+  Query,
 } from '@nestjs/common';
 import { ProductService } from './product.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
+import { Request } from 'express';
+import { Serialize } from '../interceptors/serialize.interceptor';
+import { ProductResponseDto } from './dto/product-response.dto';
+import { ProtectFields } from '../decorators/protect-fields.decorator';
+import { Public } from '../decorators/public.decorator';
+import { ProductSearchDto } from './dto/product-search.dto';
+import { OwnershipCheck } from '../decorators/ownership.decorator';
 
 @Controller('product')
+@Serialize(ProductResponseDto)
 export class ProductController {
   constructor(private readonly productService: ProductService) {}
 
   @Post()
-  create(@Body() createProductDto: CreateProductDto) {
-    return this.productService.create(createProductDto);
+  @ProtectFields(['isFeatured', 'rating'])
+  create(@Body() createProductDto: CreateProductDto, @Req() req: Request) {
+    return this.productService.create(createProductDto, req.currentUser);
   }
 
   @Get()
+  @Public()
   findAll() {
     return this.productService.findAll();
   }
 
+  @Get('/search')
+  @Public()
+  findOneByName(@Query() query: ProductSearchDto) {
+    return this.productService.findOneByName(query.name);
+  }
+
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.productService.findOne(+id);
+  @Public()
+  async findOne(@Param('id') id: string) {
+    if (isNaN(+id)) {
+      throw new BadRequestException('Invalid product ID');
+    }
+
+    const product = await this.productService.findOneById(+id);
+
+    if (!product) {
+      throw new NotFoundException('Product not found');
+    }
+
+    return product;
   }
 
   @Patch(':id')
+  @OwnershipCheck()
+  @ProtectFields(['isFeatured', 'rating'])
   update(@Param('id') id: string, @Body() updateProductDto: UpdateProductDto) {
     return this.productService.update(+id, updateProductDto);
   }
 
   @Delete(':id')
+  @OwnershipCheck()
   remove(@Param('id') id: string) {
     return this.productService.remove(+id);
   }

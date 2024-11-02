@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   CanActivate,
   ExecutionContext,
   Injectable,
@@ -7,12 +8,14 @@ import {
 import { Reflector } from '@nestjs/core';
 import { Request } from 'express';
 import { UsersService } from '../users/users.service';
+import { ProductService } from '../product/product.service';
 
 @Injectable()
 export class OwnershipGuard implements CanActivate {
   constructor(
     private reflector: Reflector,
     private userService: UsersService,
+    private productsService: ProductService,
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
@@ -46,6 +49,23 @@ export class OwnershipGuard implements CanActivate {
           }
         } catch {
           return false;
+        }
+
+      case 'ProductController':
+        try {
+          resource = await this.productsService.findOneById(
+            parseInt(resourceId),
+          );
+
+          if (!resource) {
+            throw new BadRequestException('product not found');
+          }
+
+          if (resource?.user.id === user.id) {
+            return true;
+          }
+        } catch {
+          throw new BadRequestException('product not found');
         }
     }
 
