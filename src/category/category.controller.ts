@@ -7,11 +7,15 @@ import {
   Param,
   Delete,
   NotFoundException,
+  BadRequestException,
 } from '@nestjs/common';
 import { CategoryService } from './category.service';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
-import { Roles } from 'src/decorators/roles.decorator';
+import { Roles } from '../decorators/roles.decorator';
+import { Public } from '../decorators/public.decorator';
+import { Serialize } from 'src/interceptors/serialize.interceptor';
+import { CategoryProductsResponseDto } from './dto/category-products-response.tdo';
 
 @Controller('category')
 export class CategoryController {
@@ -24,11 +28,26 @@ export class CategoryController {
   }
 
   @Get()
+  @Public()
   findAll() {
     return this.categoryService.findAll();
   }
 
+  @Get(':id/products')
+  @Public()
+  @Serialize(CategoryProductsResponseDto)
+  async findCategoryProducts(@Param('id') id: string) {
+    if (isNaN(+id)) {
+      throw new BadRequestException('Invalid category ID');
+    }
+
+    const productsInCategory =
+      await this.categoryService.findOneWithProducts(+id);
+    return productsInCategory;
+  }
+
   @Get(':id')
+  @Public()
   async findOne(@Param('id') id: string) {
     const category = await this.categoryService.findOne(+id);
 

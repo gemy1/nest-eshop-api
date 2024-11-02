@@ -30,6 +30,10 @@ export class CategoryService {
     return await this.repo.findOne({ where: { id } });
   }
 
+  async findOneWithProducts(id: number) {
+    return await this.repo.findOne({ where: { id }, relations: ['products'] });
+  }
+
   async findOneByName(name: string) {
     return await this.repo.findOne({ where: { name } });
   }
