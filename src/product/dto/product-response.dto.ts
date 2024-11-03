@@ -45,4 +45,10 @@ export class ProductResponseDto {
 
   @Expose()
   message: string;
+
+  @Expose()
+  file: any;
+
+  @Expose()
+  files: any;
 }

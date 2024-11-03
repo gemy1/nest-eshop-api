@@ -10,6 +10,9 @@ import {
   NotFoundException,
   BadRequestException,
   Query,
+  UseInterceptors,
+  UploadedFile,
+  UploadedFiles,
 } from '@nestjs/common';
 import { ProductService } from './product.service';
 import { CreateProductDto } from './dto/create-product.dto';
@@ -21,11 +24,26 @@ import { ProtectFields } from '../decorators/protect-fields.decorator';
 import { Public } from '../decorators/public.decorator';
 import { ProductSearchDto } from './dto/product-search.dto';
 import { OwnershipCheck } from '../decorators/ownership.decorator';
+import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
+import { Express } from 'express';
+import { multerConfig } from 'src/config/multer.config';
 
 @Controller('product')
 @Serialize(ProductResponseDto)
 export class ProductController {
   constructor(private readonly productService: ProductService) {}
+
+  @Post('img')
+  @UseInterceptors(FileInterceptor('img', multerConfig))
+  productImg(@UploadedFile() file: Express.Multer.File) {
+    return { file };
+  }
+
+  @Post('imgs')
+  @UseInterceptors(FilesInterceptor('imgs', 10, multerConfig))
+  productImgs(@UploadedFiles() files: Array<Express.Multer.File>) {
+    return { files };
+  }
 
   @Post()
   @ProtectFields(['isFeatured', 'rating'])
