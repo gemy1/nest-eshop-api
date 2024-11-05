@@ -1,4 +1,5 @@
 // create-product.dto.ts
+import { Transform } from 'class-transformer';
 import {
   IsString,
   IsNumber,
@@ -16,6 +17,7 @@ export class CreateProductDto {
   @IsString()
   description: string;
 
+  @Transform(({ value }) => parseFloat(value))
   @IsNumber()
   @IsPositive()
   price: number;
@@ -29,11 +31,13 @@ export class CreateProductDto {
   @IsOptional()
   images: string[];
 
+  @Transform(({ value }) => parseFloat(value))
   @IsNumber()
   @IsPositive()
   @IsInt()
   stockQuantity: number;
 
+  @Transform(({ value }) => parseFloat(value))
   @IsNumber()
   @IsOptional()
   categoryId: number;

@@ -26,6 +26,7 @@ export class ProductService {
     }
 
     const product = this.repo.create(createProductDto);
+
     product.user = user;
     product.category = category;
 
@@ -49,6 +50,10 @@ export class ProductService {
   }
 
   async update(id: number, updateProductDto: UpdateProductDto) {
+    if (isNaN(id)) {
+      throw new BadRequestException('Invalid product ID');
+    }
+
     const product = await this.findOneById(id);
 
     if (!product) {
@@ -64,10 +69,13 @@ export class ProductService {
         throw new BadRequestException('CategoryId not found');
       }
     }
+
     Object.assign(product, updateProductDto);
     product.category = category;
 
-    return await this.repo.save(product);
+    const updateProduct = await this.repo.save(product);
+
+    return updateProduct;
   }
 
   async remove(id: number) {

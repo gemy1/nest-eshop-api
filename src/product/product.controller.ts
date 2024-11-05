@@ -25,7 +25,6 @@ import { Public } from '../decorators/public.decorator';
 import { ProductSearchDto } from './dto/product-search.dto';
 import { OwnershipCheck } from '../decorators/ownership.decorator';
 import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
-import { Express } from 'express';
 import { multerConfig } from 'src/config/multer.config';
 
 @Controller('product')
@@ -33,16 +32,34 @@ import { multerConfig } from 'src/config/multer.config';
 export class ProductController {
   constructor(private readonly productService: ProductService) {}
 
-  @Post('img')
-  @UseInterceptors(FileInterceptor('img', multerConfig))
-  productImg(@UploadedFile() file: Express.Multer.File) {
-    return { file };
+  //upload product main image
+  @Post(':id/image')
+  @UseInterceptors(FileInterceptor('image', multerConfig))
+  productImage(
+    @Param('id') id: string,
+    @UploadedFile() file: Express.Multer.File,
+  ) {
+    if (!file) {
+      throw new BadRequestException('No image provided');
+    }
+
+    return this.productService.update(parseInt(id), { image: file.path });
   }
 
-  @Post('imgs')
-  @UseInterceptors(FilesInterceptor('imgs', 10, multerConfig))
-  productImgs(@UploadedFiles() files: Array<Express.Multer.File>) {
-    return { files };
+  // upload product images gallery
+  @Post(':id/images')
+  @UseInterceptors(FilesInterceptor('images', 10, multerConfig))
+  productImagesGallery(
+    @Param('id') id: string,
+    @UploadedFiles() files: Array<Express.Multer.File>,
+  ) {
+    if (!files) {
+      throw new BadRequestException('No images provided');
+    }
+
+    const imagePathArray = files.map((file) => file.path);
+
+    return this.productService.update(parseInt(id), { images: imagePathArray });
   }
 
   @Post()
