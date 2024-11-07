@@ -57,10 +57,6 @@ export class OwnershipGuard implements CanActivate {
             parseInt(resourceId),
           );
 
-          if (!resource) {
-            throw new BadRequestException('product not found');
-          }
-
           if (resource?.user.id === user.id) {
             return true;
           }

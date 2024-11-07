@@ -1,4 +1,4 @@
-import { User } from 'src/users/entity/user.entity';
+import { User } from '../../users/entity/user.entity';
 import { Category } from '../../category/entities/category.entity';
 import {
   Entity,
@@ -7,7 +7,11 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   ManyToOne,
+  OneToMany,
+  OneToOne,
+  JoinColumn,
 } from 'typeorm';
+import { Image } from '../../image/entities/image.entity';
 
 @Entity()
 export class Product {
@@ -23,19 +27,30 @@ export class Product {
   @Column({ default: 0 })
   price: number;
 
-  @Column({ default: '' })
-  image: string;
+  @OneToOne(() => Image, { eager: true, cascade: true, onDelete: 'CASCADE' })
+  @JoinColumn()
+  mainImage: Image;
 
-  @Column({ type: 'simple-array', nullable: true })
-  images: string[];
+  @OneToMany(() => Image, (image) => image.product, {
+    eager: true,
+  })
+  imagesGallery: Image[];
 
   @Column({ default: 0 })
   stockQuantity: number;
 
-  @ManyToOne(() => Category, (category) => category.products, { eager: true })
+  @ManyToOne(() => Category, (category) => category.products, {
+    eager: true,
+    cascade: true,
+    onDelete: 'SET NULL',
+  })
   category: Category;
 
-  @ManyToOne(() => User, (user) => user.products, { eager: true })
+  @ManyToOne(() => User, (user) => user.products, {
+    eager: true,
+    cascade: true,
+    onDelete: 'SET NULL',
+  })
   user: User;
 
   @Column({ type: 'simple-array', nullable: true })

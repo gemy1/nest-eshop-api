@@ -12,6 +12,7 @@ import { ProductModule } from './product/product.module';
 import { AdminSeederModule } from './seed/admin-seeder.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
+import { ImageModule } from './image/image.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { join } from 'path';
     AuthModule,
     ProductModule,
     AdminSeederModule,
+    ImageModule,
   ],
   controllers: [AppController],
   providers: [

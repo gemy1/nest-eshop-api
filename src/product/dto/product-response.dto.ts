@@ -1,4 +1,6 @@
-import { Expose, Transform } from 'class-transformer';
+import { Expose, Transform, Type } from 'class-transformer';
+import { Image } from '../../image/entities/image.entity';
+import { ImageResponseDto } from 'src/image/dto/image-response.dto';
 
 export class ProductResponseDto {
   @Expose()
@@ -14,10 +16,17 @@ export class ProductResponseDto {
   price: number;
 
   @Expose()
-  image: string;
+  @Transform(({ obj }) => {
+    return { id: obj.mainImage?.id, path: obj.mainImage?.path };
+  })
+  mainImage: string;
 
   @Expose()
-  images: string[];
+  // @Transform(({ obj }) => {
+  //   return { id: obj.imagesGallery?.id, path: obj.imagesGallery?.path };
+  // })
+  @Type(() => ImageResponseDto)
+  imagesGallery: Image[];
 
   @Expose()
   stockQuantity: number;
@@ -45,10 +54,4 @@ export class ProductResponseDto {
 
   @Expose()
   message: string;
-
-  @Expose()
-  file: any;
-
-  @Expose()
-  files: any;
 }

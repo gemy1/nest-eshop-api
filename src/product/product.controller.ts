@@ -7,7 +7,6 @@ import {
   Param,
   Delete,
   Req,
-  NotFoundException,
   BadRequestException,
   Query,
   UseInterceptors,
@@ -34,32 +33,49 @@ export class ProductController {
 
   //upload product main image
   @Post(':id/image')
+  @OwnershipCheck()
   @UseInterceptors(FileInterceptor('image', multerConfig))
-  productImage(
+  async UploadProductMainImage(
     @Param('id') id: string,
-    @UploadedFile() file: Express.Multer.File,
+    @UploadedFile() image: Express.Multer.File,
   ) {
-    if (!file) {
+    if (!image) {
       throw new BadRequestException('No image provided');
     }
 
-    return this.productService.update(parseInt(id), { image: file.path });
+    return this.productService.updateProductMainImage(+id, image);
   }
 
   // upload product images gallery
   @Post(':id/images')
+  @OwnershipCheck()
   @UseInterceptors(FilesInterceptor('images', 10, multerConfig))
-  productImagesGallery(
+  async UploadProductImagesGallery(
     @Param('id') id: string,
-    @UploadedFiles() files: Array<Express.Multer.File>,
+    @UploadedFiles() images: Array<Express.Multer.File>,
   ) {
-    if (!files) {
+    if (!images) {
       throw new BadRequestException('No images provided');
     }
 
-    const imagePathArray = files.map((file) => file.path);
+    return await this.productService.updateProductImageGallery(+id, images);
+  }
 
-    return this.productService.update(parseInt(id), { images: imagePathArray });
+  // delete main image
+  @Delete(':id/image')
+  @OwnershipCheck()
+  async DeleteProductMainImage(@Param('id') productId: string) {
+    return this.productService.deleteMainImage(+productId);
+  }
+
+  // delete image gallery
+  @Delete(':id/images/:imageId')
+  @OwnershipCheck()
+  async DeleteProductImageGallery(
+    @Param('id') productId: string,
+    @Param('imageId') imageId: string,
+  ) {
+    return this.productService.deleteProductGalleryImage(+productId, +imageId);
   }
 
   @Post()
@@ -83,17 +99,7 @@ export class ProductController {
   @Get(':id')
   @Public()
   async findOne(@Param('id') id: string) {
-    if (isNaN(+id)) {
-      throw new BadRequestException('Invalid product ID');
-    }
-
-    const product = await this.productService.findOneById(+id);
-
-    if (!product) {
-      throw new NotFoundException('Product not found');
-    }
-
-    return product;
+    return await this.productService.findOneById(+id);
   }
 
   @Patch(':id')

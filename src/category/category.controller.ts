@@ -63,7 +63,6 @@ export class CategoryController {
     @Param('id') id: string,
     @Body() updateCategoryDto: UpdateCategoryDto,
   ) {
-    console.log(id, updateCategoryDto);
     return await this.categoryService.update(+id, updateCategoryDto);
   }
 

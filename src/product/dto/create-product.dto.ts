@@ -22,15 +22,6 @@ export class CreateProductDto {
   @IsPositive()
   price: number;
 
-  @IsString()
-  @IsOptional()
-  image: string;
-
-  @IsArray()
-  @IsString({ each: true }) // Validates each item in the array is a string
-  @IsOptional()
-  images: string[];
-
   @Transform(({ value }) => parseFloat(value))
   @IsNumber()
   @IsPositive()

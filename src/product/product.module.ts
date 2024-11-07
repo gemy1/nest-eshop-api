@@ -5,14 +5,14 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Product } from './entities/product.entity';
 import { CategoryModule } from 'src/category/category.module';
 import { MulterModule } from '@nestjs/platform-express';
+import { ImageModule } from 'src/image/image.module';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([Product]),
-    MulterModule.register({
-      dest: './assets/images',
-    }),
+    MulterModule.register(),
     CategoryModule,
+    ImageModule,
   ],
   controllers: [ProductController],
   providers: [ProductService],
