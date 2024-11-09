@@ -17,6 +17,9 @@ export class CreateProductDto {
   @IsString()
   description: string;
 
+  @IsString()
+  richDescription: string;
+
   @Transform(({ value }) => parseFloat(value))
   @IsNumber()
   @IsPositive()

@@ -13,6 +13,9 @@ export class ProductResponseDto {
   description: string;
 
   @Expose()
+  richDescription: string;
+
+  @Expose()
   price: number;
 
   @Expose()

@@ -24,6 +24,9 @@ export class Product {
   @Column({ type: 'text' })
   description: string;
 
+  @Column({ type: 'text', default: '' })
+  richDescription: string;
+
   @Column({ default: 0 })
   price: number;
 

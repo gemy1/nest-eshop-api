@@ -8,10 +8,11 @@ import { UpdateProductDto } from './dto/update-product.dto';
 import { Like, Repository } from 'typeorm';
 import { Product } from './entities/product.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { User } from 'src/users/entity/user.entity';
-import { CategoryService } from 'src/category/category.service';
-import { Category } from 'src/category/entities/category.entity';
-import { ImageService } from 'src/image/image.service';
+import { User } from '../users/entity/user.entity';
+import { CategoryService } from '../category/category.service';
+import { Category } from '../category/entities/category.entity';
+import { ImageService } from '../image/image.service';
+import { Image } from '../image/entities/image.entity';
 
 @Injectable()
 export class ProductService {
@@ -101,7 +102,8 @@ export class ProductService {
       await this.imageService.remove(+imageId);
     }
 
-    const newImage = await this.imageService.uploadImage(image.path);
+    const newImage = new Image();
+    newImage.path = image.path;
 
     product.mainImage = newImage;
 
