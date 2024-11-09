@@ -17,14 +17,14 @@ export class ImageController {
   constructor(private readonly imageService: ImageService) {}
 
   @Post()
-  @Roles(['admin'])
-  @UseInterceptors(FileInterceptor('image', multerConfig))
-  uploadImage(@UploadedFile() file: Express.Multer.File) {
+  @UseInterceptors(FileInterceptor('upload', multerConfig))
+  async uploadImage(@UploadedFile() file: Express.Multer.File) {
     if (!file) {
       throw new BadRequestException('No image provided');
     }
 
-    return this.imageService.uploadImage(file.path);
+    const image = await this.imageService.uploadImage(file.path);
+    return { url: `http://localhost:3000/${image.path}` };
   }
 
   @Delete(':id')

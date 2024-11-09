@@ -28,7 +28,7 @@ export const multerConfig = {
   }),
   limits: { fileSize: 1024 * 1024 * 5 },
   fileFilter: (req: Request, file: Express.Multer.File, cb) => {
-    if (!file.originalname.match(/\.(jpg|jpeg|png|gif)$/)) {
+    if (!file.originalname.match(/\.(jpg|jpeg|png|gif|webp)$/)) {
       return cb(new BadRequestException('Invalid file format'), false);
     }
     cb(null, true);
