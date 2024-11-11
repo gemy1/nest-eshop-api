@@ -4,7 +4,6 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  JoinColumn,
   OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
@@ -34,8 +33,10 @@ export class User {
   @OneToMany(() => Product, (product) => product.user)
   products: Product[];
 
-  @OneToOne(() => Cart, (cart) => cart.user)
-  @JoinColumn()
+  @OneToOne(() => Cart, (cart) => cart.user, {
+    cascade: true,
+    onDelete: 'CASCADE',
+  })
   cart: Cart;
 
   @CreateDateColumn()

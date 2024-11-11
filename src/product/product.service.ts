@@ -66,6 +66,13 @@ export class ProductService {
     });
   }
 
+  async findOneWithoutRelation(id: number) {
+    return await this.repo
+      .createQueryBuilder('product')
+      .where('product.id = :id', { id })
+      .getOne();
+  }
+
   async update(id: number, updateProductDto: UpdateProductDto) {
     const product = await this.findOneById(id);
 
@@ -89,7 +96,9 @@ export class ProductService {
 
     const deletedProduct = await this.repo.remove(product);
 
-    await this.imageService.remove(product.mainImage.id);
+    try {
+      await this.imageService.remove(product.mainImage?.id);
+    } catch {}
 
     return { ...deletedProduct, message: 'item deleted successful' };
   }

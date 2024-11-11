@@ -3,6 +3,7 @@ import { User } from '../../users/entity/user.entity';
 import {
   CreateDateColumn,
   Entity,
+  JoinColumn,
   OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
@@ -16,12 +17,14 @@ export class Cart {
 
   @OneToMany(() => CartItem, (cartItem) => cartItem.cart, {
     cascade: true,
+    onDelete: 'CASCADE',
   })
   cartItems: CartItem[];
 
   @OneToOne(() => User, (user) => user.cart, {
-    cascade: true,
+    onDelete: 'CASCADE',
   })
+  @JoinColumn()
   user: User;
 
   @CreateDateColumn()

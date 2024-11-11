@@ -14,10 +14,10 @@ export class CartItem {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => Cart, (cart) => cart.cartItems)
+  @ManyToOne(() => Cart, (cart) => cart.cartItems, { onDelete: 'CASCADE' })
   cart: Cart;
 
-  @ManyToOne(() => Product)
+  @ManyToOne(() => Product, { cascade: true, onDelete: 'CASCADE' })
   product: Product;
 
   @Column()

@@ -5,6 +5,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { CreateUserDto } from './dtos/create-user.dto';
 import { UpdateUserDto } from './dtos/update-user.dto';
 import * as argon2 from 'argon2';
+import { Cart } from '../cart/entities/cart.entity';
 
 @Injectable()
 export class UsersService {
@@ -12,6 +13,7 @@ export class UsersService {
 
   async create(userDetails: CreateUserDto) {
     const user = this.repo.create(userDetails);
+    user.cart = new Cart();
 
     return await this.repo.save(user);
   }
@@ -23,7 +25,13 @@ export class UsersService {
   }
 
   async findOneById(id: number) {
+    if (isNaN(id)) {
+      throw new BadRequestException('Invalid user ID');
+    }
     const user = await this.repo.findOne({ where: { id: id } });
+    if (!user) {
+      throw new BadRequestException('User not found');
+    }
 
     return user;
   }
@@ -63,9 +71,11 @@ export class UsersService {
   }
 
   async removeById(id: number) {
-    const user = await this.repo.delete(id);
+    const user = await this.findOneById(id);
 
-    if (user.affected === 0) {
+    const removedUser = await this.repo.remove(user);
+
+    if (!removedUser) {
       throw new BadRequestException('User not found');
     }
 
