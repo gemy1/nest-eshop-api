@@ -1,3 +1,4 @@
+import { Order } from 'src/order/entities/order.entity';
 import { Cart } from '../../cart/entities/cart.entity';
 import { Product } from '../../product/entities/product.entity';
 import {
@@ -38,6 +39,9 @@ export class User {
     onDelete: 'CASCADE',
   })
   cart: Cart;
+
+  @OneToMany(() => Order, (order) => order.user)
+  orders: Order[];
 
   @CreateDateColumn()
   createdAt: Date;

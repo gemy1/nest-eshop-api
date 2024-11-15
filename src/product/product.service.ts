@@ -8,7 +8,7 @@ import { UpdateProductDto } from './dto/update-product.dto';
 import { Like, Repository } from 'typeorm';
 import { Product } from './entities/product.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { User } from '../users/entity/user.entity';
+import { User } from '../users/entities/user.entity';
 import { CategoryService } from '../category/category.service';
 import { Category } from '../category/entities/category.entity';
 import { ImageService } from '../image/image.service';

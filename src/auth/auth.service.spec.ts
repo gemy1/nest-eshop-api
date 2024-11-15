@@ -6,7 +6,7 @@ import * as argon2 from 'argon2';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { CreateUserDto } from 'src/users/dtos/create-user.dto';
-import { User } from '../users/entity/user.entity';
+import { User } from '../users/entities/user.entity';
 import { BadRequestException, UnauthorizedException } from '@nestjs/common';
 import { LoginUserDto } from '../users/dtos/login-user.dto';
 

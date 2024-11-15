@@ -15,6 +15,9 @@ import { join } from 'path';
 import { ImageModule } from './image/image.module';
 import { CartModule } from './cart/cart.module';
 import { CartItemModule } from './cart-item/cart-item.module';
+import { OrderModule } from './order/order.module';
+import { OrderItemModule } from './order-item/order-item.module';
+import { PaymentModule } from './payment/payment.module';
 
 @Module({
   imports: [
@@ -34,6 +37,9 @@ import { CartItemModule } from './cart-item/cart-item.module';
     ImageModule,
     CartModule,
     CartItemModule,
+    OrderModule,
+    OrderItemModule,
+    PaymentModule,
   ],
   controllers: [AppController],
   providers: [

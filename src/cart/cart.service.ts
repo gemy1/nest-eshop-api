@@ -3,7 +3,7 @@ import { Repository } from 'typeorm';
 import { Cart } from './entities/cart.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { addItemDto } from './dto/add-item.dto';
-import { User } from '../users/entity/user.entity';
+import { User } from '../users/entities/user.entity';
 import { ProductService } from '../product/product.service';
 import { CartItem } from 'src/cart-item/entities/cart-item.entity';
 import { CartItemService } from 'src/cart-item/cart-item.service';
@@ -48,6 +48,8 @@ export class CartService {
       .createQueryBuilder('cart')
       .leftJoinAndSelect('cart.cartItems', 'cartItem')
       .leftJoinAndSelect('cartItem.product', 'product')
+      .leftJoin('cart.user', 'user')
+      .addSelect(['user.id', 'user.username'])
       .where('cart.userId = :id', { id })
       .getOne();
   }
