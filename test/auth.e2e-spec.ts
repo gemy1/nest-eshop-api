@@ -3,6 +3,8 @@ import { AppModule } from '../src/app.module';
 import * as request from 'supertest';
 import { INestApplication } from '@nestjs/common';
 import { CreateUserDto } from 'src/users/dtos/create-user.dto';
+import { DataSource } from 'typeorm';
+let dataSource: DataSource;
 
 describe('Auth module', () => {
   let app: INestApplication;
@@ -14,6 +16,13 @@ describe('Auth module', () => {
 
     app = moduleFixture.createNestApplication();
     await app.init();
+    dataSource = app.get(DataSource);
+  });
+  afterEach(async () => {
+    // Close the database connection if it's open
+    if (dataSource.isInitialized) {
+      await dataSource.destroy();
+    }
   });
 
   it('should register a new user', async () => {

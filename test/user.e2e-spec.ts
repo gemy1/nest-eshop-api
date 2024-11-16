@@ -3,11 +3,13 @@ import { AppModule } from '../src/app.module';
 import * as request from 'supertest';
 import { INestApplication } from '@nestjs/common';
 import { AuthService } from '../src/auth/auth.service';
+import { DataSource } from 'typeorm';
 
 describe('user module', () => {
   let app: INestApplication;
   let authService: AuthService;
   let accessToken: string;
+  let dataSource: DataSource;
 
   beforeEach(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -17,6 +19,7 @@ describe('user module', () => {
     app = moduleFixture.createNestApplication();
     await app.init();
     authService = moduleFixture.get<AuthService>(AuthService);
+    dataSource = app.get(DataSource);
   });
   beforeEach(async () => {
     const admin = {
@@ -26,6 +29,13 @@ describe('user module', () => {
       role: 'admin',
     };
     ({ accessToken } = await authService.register(admin));
+  });
+
+  afterEach(async () => {
+    // Close the database connection if it's open
+    if (dataSource.isInitialized) {
+      await dataSource.destroy();
+    }
   });
 
   describe('find all user', () => {
