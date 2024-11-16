@@ -14,8 +14,8 @@ import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 import { Roles } from '../decorators/roles.decorator';
 import { Public } from '../decorators/public.decorator';
-import { Serialize } from 'src/interceptors/serialize.interceptor';
-import { CategoryProductsResponseDto } from './dto/category-products-response.tdo';
+import { Serialize } from '../interceptors/serialize.interceptor';
+import { CategoryProductsResponseDto } from './dto/category-products-response.dto';
 
 @Controller('category')
 export class CategoryController {

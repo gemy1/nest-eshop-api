@@ -4,7 +4,7 @@ import * as request from 'supertest';
 import { INestApplication } from '@nestjs/common';
 import { AuthService } from '../src/auth/auth.service';
 
-describe('Auth module', () => {
+describe('user module', () => {
   let app: INestApplication;
   let authService: AuthService;
   let accessToken: string;

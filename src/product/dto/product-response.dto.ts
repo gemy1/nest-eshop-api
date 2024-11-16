@@ -1,6 +1,6 @@
 import { Expose, Transform, Type } from 'class-transformer';
 import { Image } from '../../image/entities/image.entity';
-import { ImageResponseDto } from 'src/image/dto/image-response.dto';
+import { ImageResponseDto } from '../../image/dto/image-response.dto';
 
 export class ProductResponseDto {
   @Expose()

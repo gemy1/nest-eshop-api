@@ -7,7 +7,7 @@ import { CategoryModule } from './category/category.module';
 import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
 import { APP_PIPE } from '@nestjs/core';
-import { dbConfig } from '../typeOrm.config';
+
 import { ProductModule } from './product/product.module';
 import { AdminSeederModule } from './seed/admin-seeder.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
@@ -18,12 +18,21 @@ import { CartItemModule } from './cart-item/cart-item.module';
 import { OrderModule } from './order/order.module';
 import { OrderItemModule } from './order-item/order-item.module';
 import { PaymentModule } from './payment/payment.module';
+import { dbConfig } from '../typeOrm.config';
+import * as Joi from 'joi';
 
 @Module({
   imports: [
-    TypeOrmModule.forRoot(dbConfig as any),
     ConfigModule.forRoot({
       isGlobal: true,
+      validationSchema: Joi.object({
+        NODE_ENV: Joi.string()
+          .valid('development', 'production', 'test')
+          .default('development'),
+      }),
+    }),
+    TypeOrmModule.forRootAsync({
+      useFactory: () => dbConfig(),
     }),
     ServeStaticModule.forRoot({
       rootPath: join(process.cwd(), 'assets'),

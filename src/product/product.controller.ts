@@ -24,7 +24,7 @@ import { Public } from '../decorators/public.decorator';
 import { ProductSearchDto } from './dto/product-search.dto';
 import { OwnershipCheck } from '../decorators/ownership.decorator';
 import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
-import { multerConfig } from 'src/config/multer.config';
+import { multerConfig } from '../config/multer.config';
 
 @Controller('product')
 @Serialize(ProductResponseDto)

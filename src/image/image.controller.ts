@@ -10,7 +10,7 @@ import {
 import { ImageService } from './image.service';
 import { multerConfig } from '../config/multer.config';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { Roles } from 'src/decorators/roles.decorator';
+import { Roles } from '../decorators/roles.decorator';
 
 @Controller('image')
 export class ImageController {
