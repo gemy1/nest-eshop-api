@@ -33,7 +33,6 @@ export class CreateProductDto {
 
   @Transform(({ value }) => parseFloat(value))
   @IsNumber()
-  @IsOptional()
   categoryId: number;
 
   @IsArray()

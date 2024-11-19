@@ -27,12 +27,18 @@ export class CartService {
 
     if (existsItem) {
       existsItem.quantity += quantity;
+      if (existsItem.quantity > existsItem.product.stockQuantity) {
+        throw new BadRequestException('Not enough stock');
+      }
       return await this.repo.save(cart);
     }
 
     const product = await this.productService.findOneWithoutRelation(productId);
     if (!product) {
       throw new BadRequestException('product not found');
+    }
+    if (product.stockQuantity < quantity) {
+      throw new BadRequestException('Not enough stock');
     }
 
     const newItem = new CartItem();
@@ -68,6 +74,11 @@ export class CartService {
     }
 
     existsItem.quantity = quantity;
+
+    if (existsItem.quantity > existsItem.product.stockQuantity) {
+      throw new BadRequestException('Not enough stock');
+    }
+
     return await this.repo.save(cart);
   }
 
