@@ -27,7 +27,16 @@ export class CategoryService {
   }
 
   async findOne(id: number) {
-    return await this.repo.findOne({ where: { id } });
+    if (isNaN(id)) {
+      throw new BadRequestException('Invalid category ID');
+    }
+    const category = await this.repo.findOne({ where: { id } });
+
+    if (!category) {
+      throw new BadRequestException('Category not found');
+    }
+
+    return category;
   }
 
   async findOneWithProducts(id: number) {
@@ -40,10 +49,6 @@ export class CategoryService {
 
   async update(id: number, updateCategoryDto: UpdateCategoryDto) {
     const category = await this.findOne(id);
-
-    if (!category) {
-      throw new BadRequestException('Category not found');
-    }
 
     Object.assign(category, updateCategoryDto);
 
