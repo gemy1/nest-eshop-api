@@ -50,6 +50,13 @@ export class CategoryService {
   async update(id: number, updateCategoryDto: UpdateCategoryDto) {
     const category = await this.findOne(id);
 
+    if (updateCategoryDto.name) {
+      const findCategory = await this.findOneByName(updateCategoryDto.name);
+      if (findCategory && findCategory.id !== id) {
+        throw new BadRequestException('Category already exists');
+      }
+    }
+
     Object.assign(category, updateCategoryDto);
 
     return await this.repo.save(category);
