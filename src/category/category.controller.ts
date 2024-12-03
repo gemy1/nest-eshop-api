@@ -8,6 +8,7 @@ import {
   Delete,
   NotFoundException,
   BadRequestException,
+  Query,
 } from '@nestjs/common';
 import { CategoryService } from './category.service';
 import { CreateCategoryDto } from './dto/create-category.dto';
@@ -29,8 +30,8 @@ export class CategoryController {
 
   @Get()
   @Public()
-  findAll() {
-    return this.categoryService.findAll();
+  findAll(@Query('skip') skip: string, @Query('take') take: string) {
+    return this.categoryService.findAll(skip, take);
   }
 
   @Get(':id/products')

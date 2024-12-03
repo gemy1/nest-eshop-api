@@ -22,8 +22,14 @@ export class CategoryService {
     return await this.repo.save(category);
   }
 
-  async findAll() {
-    return await this.repo.find();
+  async findAll(skip: string, take: string) {
+    const parsedSkip = parseInt(skip, 10) || 0;
+    const parseTake = parseInt(take, 10) || 100000;
+
+    return await this.repo.findAndCount({
+      skip: parsedSkip,
+      take: parseTake,
+    });
   }
 
   async findOne(id: number) {
