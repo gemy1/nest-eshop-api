@@ -17,6 +17,7 @@ import { Roles } from '../decorators/roles.decorator';
 import { Public } from '../decorators/public.decorator';
 import { Serialize } from '../interceptors/serialize.interceptor';
 import { CategoryProductsResponseDto } from './dto/category-products-response.dto';
+import { GetCategoriesDto } from './dto/get-categories.dto';
 
 @Controller('category')
 export class CategoryController {
@@ -30,8 +31,10 @@ export class CategoryController {
 
   @Get()
   @Public()
-  findAll(@Query('skip') skip: string, @Query('take') take: string) {
-    return this.categoryService.findAll(skip, take);
+  findAll(@Query() query: GetCategoriesDto) {
+    const { skip, take, orderBy, sortOrder, search } = query;
+
+    return this.categoryService.findAll(skip, take, orderBy, sortOrder, search);
   }
 
   @Get(':id/products')

@@ -1,7 +1,7 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
-import { Repository } from 'typeorm';
+import { Like, Repository } from 'typeorm';
 import { Category } from './entities/category.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 
@@ -22,14 +22,21 @@ export class CategoryService {
     return await this.repo.save(category);
   }
 
-  async findAll(skip: string, take: string) {
-    const parsedSkip = parseInt(skip, 10) || 0;
-    const parseTake = parseInt(take, 10) || 100000;
-
-    return await this.repo.findAndCount({
-      skip: parsedSkip,
-      take: parseTake,
+  async findAll(
+    skip: number,
+    take: number,
+    orderBy: string = 'id',
+    sortOrder: string = 'asc',
+    search: string = '',
+  ) {
+    const [data, totalRecord] = await this.repo.findAndCount({
+      skip: skip,
+      take: take,
+      order: { [orderBy]: sortOrder },
+      where: search ? { name: Like(`%${search}%`) } : {},
     });
+
+    return { data, totalRecord };
   }
 
   async findOne(id: number) {
