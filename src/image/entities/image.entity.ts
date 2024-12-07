@@ -11,7 +11,7 @@ export class Image {
 
   @ManyToOne(() => Product, (product) => product.imagesGallery, {
     cascade: true,
-    onDelete: 'CASCADE',
+    onDelete: 'SET NULL',
   })
   product: Product;
 }

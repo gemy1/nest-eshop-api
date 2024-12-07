@@ -1,5 +1,5 @@
 import { Expose, Type } from 'class-transformer';
-import { ProductResponseDto } from '../../product/dto/product-response.dto';
+import { ProductResponseDetailsDto } from '../../product/dto/product-response-details.dto';
 
 export class CategoryProductsResponseDto {
   @Expose()
@@ -15,6 +15,6 @@ export class CategoryProductsResponseDto {
   color: string;
 
   @Expose()
-  @Type(() => ProductResponseDto)
-  products: ProductResponseDto[];
+  @Type(() => ProductResponseDetailsDto)
+  products: ProductResponseDetailsDto[];
 }

@@ -40,8 +40,27 @@ export class ProductService {
     return this.repo.save(product);
   }
 
-  async findAll() {
-    return await this.repo.find();
+  async findAll(
+    skip: number,
+    take: number,
+    orderBy: string = 'id',
+    sortOrder: string = 'asc',
+    search: string = '',
+  ) {
+    const searchFields = ['name', 'description', 'price'];
+
+    const whereClause = search
+      ? searchFields.map((field) => ({ [field]: Like(`%${search}%`) }))
+      : {};
+
+    const [data, totalRecord] = await this.repo.findAndCount({
+      skip: skip,
+      take: take,
+      order: { [orderBy]: sortOrder },
+      where: search ? whereClause : {},
+    });
+
+    return { data, totalRecord };
   }
 
   async findOneById(id: number) {
@@ -116,9 +135,14 @@ export class ProductService {
 
     product.mainImage = newImage;
 
-    const updatedProduct = await this.repo.save(product);
+    let updatedProduct;
+    try {
+      updatedProduct = await this.repo.save(product);
+    } catch {
+      throw new ServiceUnavailableException('Could not update main image');
+    }
 
-    return { ...updatedProduct, message: 'Main image updated successful' };
+    return { message: 'Main image updated successful', ...updatedProduct };
   }
 
   async updateProductImageGallery(id: number, images: Express.Multer.File[]) {

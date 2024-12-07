@@ -30,7 +30,7 @@ export class Product {
   @Column({ default: 0 })
   price: number;
 
-  @OneToOne(() => Image, { eager: true, cascade: true, onDelete: 'CASCADE' })
+  @OneToOne(() => Image, { eager: true, cascade: true, onDelete: 'SET NULL' })
   @JoinColumn()
   mainImage: Image;
 
