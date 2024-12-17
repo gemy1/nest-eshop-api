@@ -92,6 +92,12 @@ export class ProductService {
       .getOne();
   }
 
+  async getFeaturedProducts() {
+    return await this.repo.find({
+      where: { isFeatured: true },
+    });
+  }
+
   async update(id: number, updateProductDto: UpdateProductDto) {
     const product = await this.findOneById(id);
 

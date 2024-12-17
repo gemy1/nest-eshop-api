@@ -95,6 +95,13 @@ export class ProductController {
     return this.productService.findAll(skip, take, orderBy, sortOrder, search);
   }
 
+  @Get('featured')
+  @Public()
+  @Serialize(ProductResponseDetailsDto)
+  async getFeaturedProducts() {
+    return await this.productService.getFeaturedProducts();
+  }
+
   @Get(':id')
   @Public()
   @Serialize(ProductResponseDetailsDto)
