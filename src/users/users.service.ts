@@ -1,5 +1,5 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { Repository } from 'typeorm';
+import { Like, Repository } from 'typeorm';
 import { User } from './entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateUserDto } from './dtos/create-user.dto';
@@ -36,8 +36,27 @@ export class UsersService {
     return user;
   }
 
-  async findAll() {
-    return await this.repo.find();
+  async findAll(
+    skip: number,
+    take: number,
+    orderBy: string = 'id',
+    sortOrder: string = 'asc',
+    search: string = '',
+  ) {
+    const searchFields = ['username', 'email', 'role'];
+
+    const whereClause = search
+      ? searchFields.map((field) => ({ [field]: Like(`%${search}%`) }))
+      : {};
+
+    const [data, totalRecord] = await this.repo.findAndCount({
+      skip: skip,
+      take: take,
+      order: { [orderBy]: sortOrder },
+      where: search ? whereClause : {},
+    });
+
+    return { data, totalRecord };
   }
 
   async update(id: number, updateUserDto: UpdateUserDto) {
